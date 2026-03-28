@@ -1,0 +1,19 @@
+{
+  "name": "event-flux",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.8.21",
+    "typescript": "^5.0.0",
+    "ts-node-dev": "^2.0.0",
+    "prettier": "^3.0.0"
+  }
+}
