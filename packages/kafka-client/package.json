@@ -1,0 +1,12 @@
+{
+  "name": "@event-flux/kafka-client",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "@event-flux/types": "*"
+  }
+}

@@ -1,5 +1,7 @@
 version: '3.8'
+
 services:
+ 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -7,15 +9,24 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:latest
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
+    depends_on: [zookeeper]
+    ports: ["9092:9092"]
     environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
+ 
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: event_flux
+    ports: ["5432:5432"]
+
+  
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379" 
+    ports: ["6379:6379"]

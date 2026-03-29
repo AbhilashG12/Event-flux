@@ -5,9 +5,19 @@
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
-    "@event-flux/common": "workspace:*",
-    "express": "^4.18.0",
+    "@event-flux/kafka-client": "*",
+    "@event-flux/types": "*",
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^7.6.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
     "kafkajs": "^2.2.0",
-    "prisma": "^5.0.0"
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.6.0",
+    "tsx": "^4.21.0"
   }
 }
