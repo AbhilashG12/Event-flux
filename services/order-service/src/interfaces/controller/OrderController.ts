@@ -13,4 +13,16 @@ export class OrderController {
         const order = await useCase.execute(userId,amount);
         res.status(201).json(order);
     }
+
+    
+    static async getById(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const order = await repo.findById(id as string);
+        if (!order) return res.status(404).json({ error: "Order not found" });
+        return res.status(200).json(order);
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
 }
