@@ -1,0 +1,30 @@
+{
+  "name": "payment-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@event-flux/kafka-client": "*",
+    "@event-flux/types": "*",
+    "@prisma/client": "^5.0.0",
+    "@prisma/adapter-pg": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.11.5",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.6",
+    "prisma": "^5.0.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.5"
+  }
+}

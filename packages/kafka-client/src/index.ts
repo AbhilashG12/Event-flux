@@ -1,16 +1,29 @@
-
-import {Kafka,Partitioners,Producer,Consumer} from "kafkajs";
+import { Kafka, Partitioners, Producer, Consumer } from "kafkajs";
 
 const kafka = new Kafka({
-    clientId : "event-flux",
-    brokers : ["localhost:9092"]
-})
+    clientId: "event-flux",
+    brokers: ["localhost:9092"],
+    retry: {
+        initialRetryTime: 300,
+        retries: 10
+    }
+});
 
-export const producer : Producer = kafka.producer({
-    createPartitioner : Partitioners.LegacyPartitioner,
-})
+export const producer: Producer = kafka.producer({
+    createPartitioner: Partitioners.LegacyPartitioner,
+});
 
-export const getConsumer = (groupId:string) : Consumer => kafka.consumer({groupId});
+export const connectProducer = async () => {
+    console.log("⏳ Connecting Kafka Producer...");
+    try {
+        await producer.connect();
+        console.log("✅ Kafka Producer Connected");
+    } catch (err) {
+        console.error("❌ Kafka Connection Error:", err);
+    }
+};
+
+export const getConsumer = (groupId: string): Consumer => kafka.consumer({ groupId });
 
 export const TOPICS = {
   ORDER_EVENTS: 'order-events',
