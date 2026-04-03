@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters", "multiSchema"]
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["payments"]
   
 }
 
@@ -14,4 +16,5 @@ model Payment {
   amount    Float
   status    String
   createdAt DateTime @default(now())
+  @@schema("payments")
 }

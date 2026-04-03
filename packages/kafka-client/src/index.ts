@@ -1,12 +1,14 @@
-import { Kafka, Partitioners, Producer, Consumer } from "kafkajs";
+import { Kafka, Partitioners, Producer, Consumer ,logLevel } from "kafkajs";
 
-const kafka = new Kafka({
-    clientId: "event-flux",
-    brokers: ["localhost:9092"],
-    retry: {
-        initialRetryTime: 300,
-        retries: 10
-    }
+export const kafka = new Kafka({
+  clientId: 'event-flux',
+  brokers: ['localhost:9092'],
+  logLevel: logLevel.ERROR, 
+  retry: {
+    initialRetryTime: 300, 
+    retries: 8,            
+    factor: 2,          
+  }
 });
 
 export const producer: Producer = kafka.producer({

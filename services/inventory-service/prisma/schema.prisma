@@ -6,15 +6,23 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["payments"]
+  schemas  = ["inventory"]
 }
 
-model Payment {
+model Product {
+  id    String @id
+  stock Int
+
+  @@schema("inventory")
+}
+
+model Reservation {
   id        String   @id @default(uuid())
   orderId   String   @unique
-  amount    Float
-  status    String
+  productId String
+  quantity  Int
+  status    String  
   createdAt DateTime @default(now())
 
-  @@schema("payments")
+  @@schema("inventory")
 }

@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters", "multiSchema"]
+  output          = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["orders"]
 }
 
 model Order {
@@ -13,4 +15,6 @@ model Order {
   amount    Float
   status    String
   createdAt DateTime @default(now())
+
+  @@schema("orders")
 }

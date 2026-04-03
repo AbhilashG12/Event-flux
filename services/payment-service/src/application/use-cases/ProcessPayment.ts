@@ -27,11 +27,14 @@ export class ProcessPaymentUseCase {
       messages: [{ 
         value: JSON.stringify({
           orderId: orderData.id,
-          status: isSuccess ? "PAYMENT_SUCCESS" : "PAYMENT_FAILED"
+          event: isSuccess ? "PAYMENT_SUCCESS" : "PAYMENT_FAILED",
+          data : {
+            orderId : orderData.id,
+          }
         }) 
       }],
     });
 
-    console.log(`✅ Payment ${isSuccess ? "Success" : "Failed"} for ${orderData.id}`);
+    console.log(`Payment ${isSuccess ? "Success" : "Failed"} for ${orderData.id}`);
   }
 }
