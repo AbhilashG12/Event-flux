@@ -48,7 +48,7 @@ const startServer = async () => {
 
                     await producer.send({
                         topic: TOPICS.INVENTORY_EVENTS,
-                        messages: [{ value: JSON.stringify({ event: 'INVENTORY_RESERVED', orderId: data.orderId }) }]
+                        messages: [{ value: JSON.stringify({ event: 'INVENTORY_RESERVED', data : {orderId: data.orderId,userId:data.userId} }) }]
                     });
                 }
 

@@ -3,7 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { PrismaClient } from "../../generated/prisma/index"
 
-const connectionString = `${process.env.DATABASE_URL}`;
+const connectionString = `${process.env.ORDER_DATABASE_URL}`;
 
 
 const pool = new pg.Pool({ connectionString });

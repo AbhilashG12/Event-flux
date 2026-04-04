@@ -4,7 +4,7 @@ import { PrismaPaymentRepo } from "../../infrastructure/database/PrismaPaymentRe
 export class ProcessPaymentUseCase {
   private repo = new PrismaPaymentRepo();
 
-  async execute(orderData: { id: string; amount: number }) {
+  async execute(orderData: { id: string; amount: number , userId : string }) {
     if (!orderData.id) {
         console.error("❌ ProcessPaymentUseCase: Missing Order ID");
         return;
@@ -30,6 +30,7 @@ export class ProcessPaymentUseCase {
           event: isSuccess ? "PAYMENT_SUCCESS" : "PAYMENT_FAILED",
           data : {
             orderId : orderData.id,
+            userId : orderData.userId,
           }
         }) 
       }],

@@ -26,7 +26,8 @@ async function bootstrap() {
         if (orderInfo) {
             await processPayment.execute({
                 id: orderInfo.id, 
-                amount: orderInfo.amount
+                amount: orderInfo.amount,
+                userId : orderInfo.userId,
             });
         } else {
             console.error("❌ Received message with missing 'data' property");
