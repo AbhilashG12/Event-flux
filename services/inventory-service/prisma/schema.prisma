@@ -10,19 +10,30 @@ datasource db {
 }
 
 model Product {
-  id    String @id
+  id    String @id @map("product_id")
   stock Int
 
+  @@map("inventory")
   @@schema("inventory")
 }
 
 model Reservation {
   id        String   @id @default(uuid())
-  orderId   String   @unique
-  productId String
+  orderId   String   @unique @map("order_id")
+  productId String   @map("product_id")
   quantity  Int
   status    String  
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
 
+  @@map("reservations")
+  @@schema("inventory")
+}
+
+model ProcessedEvent {
+  eventId     String   @id @map("event_id")
+  serviceName String   @map("service_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("processed_events")
   @@schema("inventory")
 }

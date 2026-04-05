@@ -1,31 +1,50 @@
 import { producer, TOPICS } from "@event-flux/kafka-client";
 import { createEvent } from "packages/kafka-client/src/eventBuilder.js";
-import { PrismaPaymentRepo } from "../../infrastructure/database/PrismaPaymentRepo.js";
+import {prisma} from "../../lib/prisma"
 
 export class ProcessPaymentUseCase {
-    private repo = new PrismaPaymentRepo();
-
-    async execute(orderData: { id: string; amount: number; userId: string }) {
+    async execute(orderData: { id: string; amount: number; userId: string }, eventId: string) {
         if (!orderData.id) {
             console.error("❌ ProcessPaymentUseCase: Missing Order ID");
             return;
         }
 
-        const existingPayment = await this.repo.findByOrderId(orderData.id);
-        if (existingPayment) {
-            console.log(`⚠️ Order ${orderData.id} already processed. Skipping...`);
+        const processed = await prisma.processedEvent.findUnique({
+            where: { eventId: eventId }
+        });
+
+        if (processed) {
+            console.log(`⚠️ Idempotency: Event ${eventId} already processed. Skipping...`);
             return;
         }
 
         console.log(`💳 Processing payment for Order: ${orderData.id} ($${orderData.amount})`);
         
         const isSuccess = orderData.amount < 5000;
-        
-        await this.repo.create({
-            orderId: orderData.id,
-            amount: orderData.amount,
-            status: isSuccess ? "COMPLETED" : "FAILED"
-        });
+
+        try {
+            await prisma.$transaction([
+                prisma.payment.create({
+                    data: {
+                        orderId: orderData.id,
+                        amount: orderData.amount,
+                        status: isSuccess ? "COMPLETED" : "FAILED"
+                    }
+                }),
+                prisma.processedEvent.create({
+                    data: {
+                        eventId: eventId,
+                        serviceName: "payment-service"
+                    }
+                })
+            ]);
+        } catch (error: any) {
+            if (error.code === 'P2002') {
+                console.log(`⚠️ Idempotency: Concurrent duplicate event blocked for ${eventId}.`);
+                return;
+            }
+            throw error;
+        }
 
         const paymentEvent = createEvent(
             isSuccess ? "PAYMENT_SUCCESS" : "PAYMENT_FAILED", 

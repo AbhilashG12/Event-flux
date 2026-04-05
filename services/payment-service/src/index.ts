@@ -18,25 +18,23 @@ async function bootstrap() {
     await consumer.run({
             eachMessage: async ({ message }: any) => {
                 if (!message.value) return;
-                
                 const parsedEvent = JSON.parse(message.value.toString());
-            
                 const type = parsedEvent.type; 
-                const data = parsedEvent.payload; 
+                const data = parsedEvent.payload;
+                const eventId = parsedEvent.eventId; 
 
                 if (!data) {
                     console.error("❌ Received message with missing 'payload' property");
                     return;
                 }
 
-                if (type === 'ORDER_CREATED') { 
+                if (type === 'ORDER_CREATED') {
                     const { orderId, amount, userId } = data;
+                    await processPayment.execute(
+                        { id: orderId, amount, userId }, 
+                        eventId
+                    );
                     
-                    await processPayment.execute({ 
-                        id: orderId, 
-                        amount, 
-                        userId 
-                    });
                 }
             }
         });

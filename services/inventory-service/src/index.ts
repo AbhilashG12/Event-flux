@@ -29,7 +29,6 @@ const startServer = async () => {
                     const data = parsedEvent.payload;
 
                     if (type === 'PAYMENT_SUCCESS') {
-                        
                         const existing = await prisma.reservation.findUnique({ where: { orderId: data.orderId } });
                         if (existing) {
                             console.log(`⚠️ Idempotency: Reservation already exists for Order ${data.orderId}`);
@@ -105,6 +104,17 @@ const startServer = async () => {
                 }
             },
         });
+
+        const existingProduct = await prisma.product.findUnique({ 
+            where: { id: DEFAULT_PRODUCT_ID } 
+        });
+        
+        if (!existingProduct) {
+            await prisma.product.create({
+                data: { id: DEFAULT_PRODUCT_ID, stock: 100 }
+            });
+            console.log(`🌱 Seeded default product: ${DEFAULT_PRODUCT_ID} with 100 stock`);
+        }
 
         app.listen(3003, () => console.log('📦 Inventory Service listening on port 3003'));
     } catch (error) {

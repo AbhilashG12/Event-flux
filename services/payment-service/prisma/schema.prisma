@@ -1,20 +1,30 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters", "multiSchema"]
-  output   = "../generated/prisma"
+  output          = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   schemas  = ["payments"]
-  
 }
 
 model Payment {
   id        String   @id @default(uuid())
-  orderId   String   @unique
+  orderId   String   @unique @map("order_id")
   amount    Float
   status    String
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("payments")
+  @@schema("payments")
+}
+
+model ProcessedEvent {
+  eventId     String   @id @map("event_id")
+  serviceName String   @map("service_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("processed_events")
   @@schema("payments")
 }

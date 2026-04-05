@@ -128,6 +128,12 @@ exports.Prisma.OrderScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ProcessedEventScalarFieldEnum = {
+  eventId: 'eventId',
+  serviceName: 'serviceName',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -140,7 +146,8 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  Order: 'Order'
+  Order: 'Order',
+  ProcessedEvent: 'ProcessedEvent'
 };
 
 /**

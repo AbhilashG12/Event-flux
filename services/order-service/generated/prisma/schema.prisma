@@ -10,11 +10,21 @@ datasource db {
 }
 
 model Order {
-  id        String   @id
-  userId    String
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
   amount    Float
-  status    String
-  createdAt DateTime @default(now())
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now()) @map("created_at")
 
+  @@map("orders")
+  @@schema("orders")
+}
+
+model ProcessedEvent {
+  eventId     String   @id @map("event_id")
+  serviceName String   @map("service_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("processed_events")
   @@schema("orders")
 }
