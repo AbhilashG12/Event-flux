@@ -59,25 +59,25 @@ const startKafkaListener = async () => {
     console.log('🎧 WebSocket Service listening to Kafka topics...');
 
     await wsConsumer.run({
-        eachMessage: async ({ topic, message }: any) => {
-            if (!message.value) return;
-            const parsedMessage = JSON.parse(message.value.toString());
-            console.log(`[KAFKA IN] Topic: ${topic} | Event: ${parsedMessage.event} | UserID: ${parsedMessage.data?.userId}`);
-            
-            const eventType = parsedMessage.event;
-            const userId = parsedMessage.data?.userId; 
-            
-            if (userId) {
-                pub.publish('ws-notification', JSON.stringify({
-                    userId: userId,
-                    event: eventType,
-                    payload: parsedMessage.data
-                }));
-            } else {
-                console.log(`❌ IGNORING [${eventType}]: No userId found in payload!`);
+            eachMessage: async ({ topic, message }: any) => {
+                if (!message.value) return;
+                const parsedMessage = JSON.parse(message.value.toString());
+                const eventType = parsedMessage.type;       
+                const userId = parsedMessage.payload?.userId;
+                
+                console.log(`[KAFKA IN] Topic: ${topic} | Event: ${eventType} | UserID: ${userId}`);
+                
+                if (userId) {
+                    pub.publish('ws-notification', JSON.stringify({
+                        userId: userId,
+                        event: eventType,
+                        payload: parsedMessage.payload 
+                    }));
+                } else {
+                    console.log(`❌ IGNORING [${eventType}]: No userId found in payload!`);
+                }
             }
-        }
-    });
+        });
 }
 
 startKafkaListener().catch(console.error);

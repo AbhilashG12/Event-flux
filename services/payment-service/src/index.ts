@@ -16,24 +16,30 @@ async function bootstrap() {
     await consumer.subscribe({ topic: TOPICS.ORDER_EVENTS, fromBeginning: false });
 
     await consumer.run({
-    eachMessage: async ({ message }) => {
-        const rawData = message.value?.toString();
-        if (!rawData) return;
+            eachMessage: async ({ message }: any) => {
+                if (!message.value) return;
+                
+                const parsedEvent = JSON.parse(message.value.toString());
+            
+                const type = parsedEvent.type; 
+                const data = parsedEvent.payload; 
 
-        const outerEnvelope = JSON.parse(rawData);
-        const orderInfo = outerEnvelope.data;
+                if (!data) {
+                    console.error("❌ Received message with missing 'payload' property");
+                    return;
+                }
 
-        if (orderInfo) {
-            await processPayment.execute({
-                id: orderInfo.id, 
-                amount: orderInfo.amount,
-                userId : orderInfo.userId,
-            });
-        } else {
-            console.error("❌ Received message with missing 'data' property");
-        }
-    },
-});
+                if (type === 'ORDER_CREATED') { 
+                    const { orderId, amount, userId } = data;
+                    
+                    await processPayment.execute({ 
+                        id: orderId, 
+                        amount, 
+                        userId 
+                    });
+                }
+            }
+        });
 
     app.listen(3002, () => {
         console.log("💳 Payment Service listening on port 3002");
