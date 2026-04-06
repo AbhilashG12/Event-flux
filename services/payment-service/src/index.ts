@@ -1,8 +1,8 @@
 
 import "dotenv/config";
 import express from 'express';
-import { connectProducer, getConsumer, TOPICS } from "@event-flux/kafka-client";
-import { ProcessPaymentUseCase } from "./application/use-cases/ProcessPayment";
+import { connectProducer, getConsumer, TOPICS } from "@event-flux/kafka-client/src/index.js";
+import { ProcessPaymentUseCase } from "./application/use-cases/ProcessPayment.js";
 
 const processPayment = new ProcessPaymentUseCase();
 

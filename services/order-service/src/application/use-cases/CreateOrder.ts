@@ -1,7 +1,7 @@
 import { Order } from "../../domain/entities/Order";
 import { OrderRepo } from "../../domain/repos/OrderRepo";
-import { TOPICS, producer } from "@event-flux/kafka-client";
-import { createEvent } from "packages/kafka-client/src/eventBuilder";
+import { TOPICS, producer } from "@event-flux/kafka-client/src/index";
+import { createEvent } from "@event-flux/kafka-client/src/eventBuilder";
 
 export class CreateOrder {
     constructor(private orderRepo: OrderRepo) {}

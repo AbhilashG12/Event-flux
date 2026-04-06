@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma.js"
 
 export class PrismaPaymentRepo {
   async create(paymentData: { orderId: string; amount: number; status: string }) {

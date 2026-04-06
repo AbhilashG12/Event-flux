@@ -1,4 +1,4 @@
-import { getConsumer, TOPICS } from "@event-flux/kafka-client";
+import { getConsumer, TOPICS } from "@event-flux/kafka-client/src/index.js";
 
 export const startPaymentConsumer = async (useCase: any) => {
   const consumer = getConsumer("payment-group");
@@ -7,7 +7,7 @@ export const startPaymentConsumer = async (useCase: any) => {
 
   await consumer.run({
 
-    eachMessage: async ({ message, partition, heartbeat }) => {
+    eachMessage: async ({ message, partition, heartbeat }:any) => {
       try {
         const orderData = JSON.parse(message.value!.toString());
         await useCase.execute(orderData);

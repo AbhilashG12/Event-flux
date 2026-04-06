@@ -1,6 +1,6 @@
-import { producer, TOPICS } from "@event-flux/kafka-client";
-import { createEvent } from "packages/kafka-client/src/eventBuilder.js";
-import {prisma} from "../../lib/prisma"
+import { producer, TOPICS } from "@event-flux/kafka-client/src/index.js";
+import { createEvent } from "@event-flux/kafka-client/src/eventBuilder.js";
+import {prisma} from "../../lib/prisma.js"
 
 export class ProcessPaymentUseCase {
     async execute(orderData: { id: string; amount: number; userId: string }, eventId: string) {

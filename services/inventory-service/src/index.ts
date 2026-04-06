@@ -1,8 +1,8 @@
 import express from 'express';
 import { kafka, producer, TOPICS } from '@event-flux/kafka-client';
-import { createEvent } from 'packages/kafka-client/src/eventBuilder.js';
+import { createEvent } from '@event-flux/kafka-client/src/eventBuilder.js';
 import { prisma } from './lib/prisma.js';
-
+import {logger} from "@event-flux/kafka-client/src/logger.js"
 const app = express();
 app.use(express.json());
 
@@ -17,7 +17,7 @@ const startServer = async () => {
         
         await consumer.subscribe({ topic: TOPICS.PAYMENT_EVENTS, fromBeginning: true });
 
-        console.log('📦 Inventory Service connected to Kafka');
+        logger.info('📦 Inventory Service connected to Kafka');
 
         await consumer.run({
             eachMessage: async ({ topic, partition, message }: any) => {
@@ -31,7 +31,7 @@ const startServer = async () => {
                     if (type === 'PAYMENT_SUCCESS') {
                         const existing = await prisma.reservation.findUnique({ where: { orderId: data.orderId } });
                         if (existing) {
-                            console.log(`⚠️ Idempotency: Reservation already exists for Order ${data.orderId}`);
+                            logger.info(`⚠️ Idempotency: Reservation already exists for Order ${data.orderId}`);
                             return;
                         }
 
@@ -50,7 +50,7 @@ const startServer = async () => {
                             })
                         ]);
 
-                        console.log(`📦 Reserved ${DEFAULT_QTY} stock for Order: ${data.orderId}`);
+                        logger.info(`📦 Reserved ${DEFAULT_QTY} stock for Order: ${data.orderId}`);
 
                         const inventoryEvent = createEvent('INVENTORY_RESERVED', {
                             orderId: data.orderId,
@@ -70,7 +70,7 @@ const startServer = async () => {
                         const reservation = await prisma.reservation.findUnique({ where: { orderId: data.orderId } });
                         
                         if (!reservation || reservation.status === 'COMPENSATED') {
-                            console.log(`ℹ️ Ignored failed payment for ${data.orderId} (No stock was reserved)`);
+                            logger.info(`ℹ️ Ignored failed payment for ${data.orderId} (No stock was reserved)`);
                             return;
                         }
 
@@ -85,7 +85,7 @@ const startServer = async () => {
                             })
                         ]);
 
-                        console.log(`🔄 Rolled back stock for Failed Order: ${data.orderId}`);
+                        logger.info(`🔄 Rolled back stock for Failed Order: ${data.orderId}`);
                     }
                 } catch (error: any) {
                     console.error(`🚨 Poison Pill Caught! Sending to DLQ. Error: ${error.message}`);
@@ -113,10 +113,10 @@ const startServer = async () => {
             await prisma.product.create({
                 data: { id: DEFAULT_PRODUCT_ID, stock: 100 }
             });
-            console.log(`🌱 Seeded default product: ${DEFAULT_PRODUCT_ID} with 100 stock`);
+            logger.info(`🌱 Seeded default product: ${DEFAULT_PRODUCT_ID} with 100 stock`);
         }
 
-        app.listen(3003, () => console.log('📦 Inventory Service listening on port 3003'));
+        app.listen(3003, () => logger.info('📦 Inventory Service listening on port 3003'));
     } catch (error) {
         console.error('❌ Error starting Inventory Service:', error);
     }

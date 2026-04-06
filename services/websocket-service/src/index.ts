@@ -1,14 +1,14 @@
 import express from "express";
 import {WebSocket,WebSocketServer} from "ws";
 import Redis from "ioredis";
-import { kafka,TOPICS } from "@event-flux/kafka-client";
+import { kafka,TOPICS } from "@event-flux/kafka-client/src/index.js";
 import "dotenv/config";
 
 const app = express();
 const PORT = process.env.PORT || 3004;
 
-const sub = new Redis(process.env.REDIS_URL!);
-const pub = new Redis(process.env.REDIS_URL!);
+const sub = new (Redis as any)(process.env.REDIS_URL!);
+const pub = new (Redis as any)(process.env.REDIS_URL!);
 
 const clients = new Map<string,WebSocket>();
 
@@ -37,7 +37,7 @@ wss.on("connection",(ws:WebSocket,req)=>{
 })
 
 sub.subscribe("ws-notification");
-sub.on("message",(channel,message)=>{
+sub.on("message",(channel:string,message:string)=>{
     if(channel=="ws-notification"){
         const {userId,event,payload} = JSON.parse(message);
 

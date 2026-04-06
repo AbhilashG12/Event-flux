@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: Event-Flux API
+  version: 1.0.0
+paths:
+  /api/orders:
+    post:
+      summary: Create a new order
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Order created and event emitted to Kafka
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
