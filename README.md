@@ -136,10 +136,10 @@ k6 run load-test.ts
 
 ## 👤 Author
 
-**Abhilash G.**
+**Abhilash Gandhamalla**
 
   * **Docker Hub:** [abhilashg1](https://www.google.com/search?q=https://hub.docker.com/u/abhilashg1)
-  * **Focus:** Backend Engineering | Distributed Systems | AI/ML
+  * **Focus:** Full Stack Engineering | Distributed Systems 
 
 -----
 
